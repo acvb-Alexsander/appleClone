@@ -1,15 +1,18 @@
 import { Component, OnInit, HostListener, signal } from '@angular/core';
 import { gsap } from 'gsap';
 import { heroVideo, smallHeroVideo } from '../../utils';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [],
+  imports: [RouterOutlet],
   standalone: true,
   selector: 'app-hero',
   styleUrl: './hero.css',
   templateUrl: './hero.html',
 })
 export class Hero implements OnInit {
+  constructor(private router: Router) {}
+
   protected heroVideo = heroVideo;
   protected smallHeroVideo = smallHeroVideo;
 

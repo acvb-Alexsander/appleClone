@@ -1,0 +1,31 @@
+<div class="flex items-center gap-5">
+  @for (list of hightlightsSlides; track list.id; let i = $index) {
+    <div id="slider" class="sm:pr-20 pr-10">
+      <div class="video-carousel-container">
+        <div class="w-full h-full flex-center rounded-3x1 overflow-hidden bg-black">
+          <video
+            #videoRef
+            id="video"
+            #videoElement
+            autoplay
+            [playsInline]="true"
+            preload="auto"
+            muted
+            loop
+            (play)="handlePlay()"
+          >
+            <source [src]="list.video" type="video/mp4" />
+          </video>
+        </div>
+
+        <div class="absolute top-12 left-[5%] z-10">
+          @for (list of hightlightsSlides; track list.textLists; let i = $index) {
+            <div class="md:text-2xl text-xl font-medium">
+              {{ list.textLists }}
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
