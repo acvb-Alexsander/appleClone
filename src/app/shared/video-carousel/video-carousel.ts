@@ -1,6 +1,5 @@
 import { Component, ElementRef, signal, viewChildren, effect } from '@angular/core';
 import { hightlightsSlides } from '../../constant';
-import gsap from 'gsap';
 
 @Component({
   imports: [],
@@ -11,65 +10,114 @@ import gsap from 'gsap';
 })
 export class VideoCarousel {
   protected hightlightsSlides = hightlightsSlides;
+
   protected videoRef = viewChildren<ElementRef<HTMLVideoElement>>('videoRef');
   protected videoSpanRef = viewChildren<ElementRef<HTMLSpanElement>>('videoSpanRef');
-  protected videoDivRef = viewChildren<ElementRef<HTMLDivElement>>('videoDivRef');
 
+  // Estado único que descreve "qual slide está ativo e o que ele está fazendo"
   protected video = signal({
     isEnd: false,
-    startPlay: false,
+    startPlay: true,
     videoId: 0,
     isLastVideo: false,
-    isPlaying: false,
+    isPlaying: true,
   });
 
-  protected loadedData = signal<any[]>([]);
+  // Progresso (0-100) do vídeo atualmente ativo, usado na barrinha de cada dot
+  protected progress = signal(0);
 
   constructor() {
-    // 1. Efeito de Animação do Progresso (GSAP)
+    // Sempre que o slide ativo (videoId) ou o estado de play/pause mudar,
+    // garante que SÓ o vídeo atual está tocando e todos os outros estão pausados/zerados.
     effect(() => {
-      const { videoId } = this.video();
-      const spans = this.videoSpanRef();
-
-      if (spans && spans[videoId]) {
-        const spanNativo = spans[videoId].nativeElement;
-
-        let anim = gsap.to(spanNativo, {
-          onUpdate: () => {
-            // Seu código de atualização aqui
-          },
-          onComplete: () => {
-            // Seu código de conclusão aqui
-          },
-        });
-      }
-    });
-
-    // 2. Efeito de Controle de Play/Pause (Restaurado para o construtor)
-    effect(() => {
-      const { isPlaying, startPlay, videoId } = this.video();
-      const dadosCarregados = this.loadedData();
+      const { videoId, isPlaying } = this.video();
       const videos = this.videoRef();
 
-      if (dadosCarregados.length > 3 && videos && videos[videoId]) {
-        const videoNativo = videos[videoId].nativeElement;
+      if (!videos || videos.length === 0) return;
 
-        if (!isPlaying) {
-          videoNativo.pause();
-        } else if (startPlay) {
-          videoNativo.play();
+      videos.forEach((ref, i) => {
+        const el = ref.nativeElement;
+
+        if (i !== videoId) {
+          el.pause();
+          el.currentTime = 0;
+          return;
         }
-      }
+
+        if (isPlaying) {
+          el.play().catch(() => {
+            // Autoplay pode ser bloqueado pelo navegador antes de interação do usuário; ignora silenciosamente.
+          });
+        } else {
+          el.pause();
+        }
+      });
+
+      // zera a barra de progresso ao trocar de slide
+      this.progress.set(0);
     });
   }
 
-  // Método Corrigido: Adicionado o 'return' antes de abrir o objeto
-  handlePlay() {
-    this.video.update((prevVideo) => {
-      return {
-        ...prevVideo,
+  // Dispara quando o navegador consegue ler a duração do vídeo (metadata carregada)
+  protected handleLoadedMetadata(_index: number, _event: Event): void {
+    // Reservado caso precise da duração (event.target as HTMLVideoElement).duration
+  }
+
+  // Atualiza a barra de progresso do vídeo atual conforme ele toca
+  protected handleTimeUpdate(index: number, event: Event): void {
+    if (index !== this.video().videoId) return;
+
+    const el = event.target as HTMLVideoElement;
+    if (!el.duration) return;
+
+    this.progress.set((el.currentTime / el.duration) * 100);
+  }
+
+  // Quando o vídeo atual termina: avança pro próximo, e ao terminar o último volta pro primeiro (loop infinito)
+  protected handleVideoEnd(index: number): void {
+    if (index !== this.video().videoId) return;
+
+    const isLast = index === this.hightlightsSlides.length - 1;
+    const nextId = isLast ? 0 : index + 1;
+
+    this.video.update((prev) => ({
+      ...prev,
+      videoId: nextId,
+      isEnd: false,
+      isLastVideo: false,
+      isPlaying: true,
+    }));
+  }
+
+  // Botão principal: play/pause do slide atual, ou replay se já terminou tudo
+  protected handleProcess(): void {
+    const current = this.video();
+
+    if (current.isLastVideo) {
+      this.video.update((prev) => ({
+        ...prev,
+        videoId: 0,
+        isLastVideo: false,
+        isEnd: false,
         isPlaying: true,
-      };
-    });
+      }));
+      return;
+    }
+
+    this.video.update((prev) => ({
+      ...prev,
+      isPlaying: !prev.isPlaying,
+    }));
+  }
+
+  // Clique em um indicador (dot): pula direto para aquele slide e toca
+  protected handleDotClick(index: number): void {
+    this.video.update((prev) => ({
+      ...prev,
+      videoId: index,
+      isLastVideo: index === this.hightlightsSlides.length - 1 && false,
+      isEnd: false,
+      isPlaying: true,
+    }));
   }
 }
