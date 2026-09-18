@@ -3,9 +3,10 @@ import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
 import { Hero } from './components/hero/hero';
 import { Highlights } from './components/highlights/highlights';
+import { Model } from './shared/model/model';
 
 @Component({
-  imports: [RouterOutlet, Navbar, Hero, Highlights],
+  imports: [RouterOutlet, Navbar, Hero, Highlights, Model],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

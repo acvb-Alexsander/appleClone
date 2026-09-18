@@ -1,0 +1,23 @@
+<section class="common-padding">
+  <div class="screen-max-width">
+    <h1 id="heading" class="section-heading">Take a closer look</h1>
+  </div>
+
+  <div class="flex flex-col items-center mt-5">
+    <div class="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
+      <div>
+        <!-- Lendo o tamanho -->
+        <p>Tamanho atual: {{ size() }}</p>
+
+        <!-- Lendo propriedades do modelo -->
+        <h1>{{ phoneModel().title }}</h1>
+        <img [src]="phoneModel().img" alt="iPhone" />
+
+        <!-- Exemplo de como usar os botões para alterar o estado -->
+        <button (click)="updateSize('large')">Mudar para Grande</button>
+      </div>
+
+      <app-model-view></app-model-view>
+    </div>
+  </div>
+</section>
