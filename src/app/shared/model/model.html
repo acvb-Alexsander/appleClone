@@ -17,7 +17,29 @@
         <button (click)="updateSize('large')">Mudar para Grande</button>
       </div>
 
-      <app-model-view></app-model-view>
+      <app-model-view
+        [index]="1"
+        [groupRef]="small"
+        gsapType="view1"
+        [controlRef]="cameraControlSmall"
+        [setRotationState]="smallRotation"
+        [item]="phoneModel()"
+        [size]="size()"
+      ></app-model-view>
+
+      <app-model-view
+        [index]="2"
+        [groupRef]="large"
+        gsapType="view1"
+        [controlRef]="cameraControlLarge"
+        [setRotationState]="largeRotation"
+        [item]="phoneModel()"
+        [size]="size()"
+      ></app-model-view>
+
+      <div class="mx-auto w-full">
+        <p class="text-sm font-light text-center mb-5">{{ phoneModel().title }}</p>
+      </div>
     </div>
   </div>
 </section>
