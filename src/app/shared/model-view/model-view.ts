@@ -65,11 +65,11 @@ export class ModelViewComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   loading = true;
 
-  private scene = new THREE.Scene();
-  private camera = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
+  private readonly scene = new THREE.Scene();
+  private readonly camera = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
   private iphone!: IphoneHandle;
 
-  constructor(private viewerService: ModelViewerService) {}
+  constructor(private readonly viewerService: ModelViewerService) {}
 
   ngAfterViewInit(): void {
     this.camera.position.set(0, 0, 4);

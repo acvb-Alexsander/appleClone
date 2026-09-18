@@ -21,11 +21,11 @@ interface ViewportEntry {
 @Injectable({ providedIn: 'root' })
 export class ModelViewerService {
   private renderer!: THREE.WebGLRenderer;
-  private viewports = new Map<string, ViewportEntry>();
+  private readonly viewports = new Map<string, ViewportEntry>();
   private container!: HTMLElement;
   private rafId: number | null = null;
 
-  constructor(private zone: NgZone) {}
+  constructor(private readonly zone: NgZone) {}
 
   /** Chamado uma única vez pelo componente pai (Model), quando o <div> host do canvas existe. */
   init(container: HTMLElement) {
@@ -72,7 +72,7 @@ export class ModelViewerService {
     this.viewports.delete(id);
   }
 
-  private onResize = () => {
+  private readonly onResize = () => {
     if (!this.renderer) return;
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -83,7 +83,7 @@ export class ModelViewerService {
     });
   };
 
-  private loop = () => {
+  private readonly loop = () => {
     this.rafId = requestAnimationFrame(this.loop);
     if (!this.renderer) return;
 
