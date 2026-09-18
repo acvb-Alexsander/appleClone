@@ -1,0 +1,20 @@
+<section class="w-full nav-height bg-black relative">
+  <div class="h-5/6 w-full flex-center flex-col">
+    <p id="hero" class="hero-title">Iphone 15 Pro</p>
+
+    <div class="md:w-10/12 w9/12">
+      <video class="w-full pointer-events-none" autoplay muted loop playsinline="true">
+        @if (isMobile()) {
+          <source src="{{ smallHeroVideo }}" type="video/mp4" />
+        } @else {
+          <source src="{{ heroVideo }}" type="video/mp4" />
+        }
+      </video>
+    </div>
+  </div>
+
+  <div id="cta" class="flex flex-col items-center opacity-0 translate-y-20">
+    <a href="#highlights" class="btn">Buy</a>
+    <p class="font-normal text-xl">From $199/ month or $999</p>
+  </div>
+</section>
