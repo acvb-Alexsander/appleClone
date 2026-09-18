@@ -1,44 +1,60 @@
 <section class="common-padding">
   <div class="screen-max-width">
-    <h1 id="heading" class="section-heading">Take a closer look</h1>
-  </div>
+    <h1 id="heading" class="section-heading">Take a closer look.</h1>
 
-  <div class="flex flex-col items-center mt-5">
-    <div class="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
-      <div>
-        <!-- Lendo o tamanho -->
-        <p>Tamanho atual: {{ size() }}</p>
+    <div class="flex flex-col items-center mt-5">
+      <div class="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
+        <app-model-view
+          #smallView
+          [index]="1"
+          gsapType="view1"
+          [item]="model"
+          [size]="size"
+          (rotationChange)="onSmallRotationChange($event)"
+        ></app-model-view>
 
-        <!-- Lendo propriedades do modelo -->
-        <h1>{{ phoneModel().title }}</h1>
-        <img [src]="phoneModel().img" alt="iPhone" />
+        <app-model-view
+          #largeView
+          [index]="2"
+          gsapType="view2"
+          [item]="model"
+          [size]="size"
+          (rotationChange)="onLargeRotationChange($event)"
+        ></app-model-view>
 
-        <!-- Exemplo de como usar os botões para alterar o estado -->
-        <button (click)="updateSize('large')">Mudar para Grande</button>
+        <!--
+          Host do canvas compartilhado. O ModelViewerService injeta aqui o
+          <canvas> único usado pelas duas viewports (equivalente ao <Canvas>
+          do react-three/fiber com eventSource={document.getElementById('root')}).
+        -->
+        <div #canvasHost class="canvas-host"></div>
       </div>
 
-      <app-model-view
-        [index]="1"
-        [groupRef]="small"
-        gsapType="view1"
-        [controlRef]="cameraControlSmall"
-        [setRotationState]="smallRotation"
-        [item]="phoneModel()"
-        [size]="size()"
-      ></app-model-view>
-
-      <app-model-view
-        [index]="2"
-        [groupRef]="large"
-        gsapType="view1"
-        [controlRef]="cameraControlLarge"
-        [setRotationState]="largeRotation"
-        [item]="phoneModel()"
-        [size]="size()"
-      ></app-model-view>
-
       <div class="mx-auto w-full">
-        <p class="text-sm font-light text-center mb-5">{{ phoneModel().title }}</p>
+        <p class="text-sm font-light text-center mb-5">{{ model.title }}</p>
+
+        <div class="flex-center">
+          <ul class="color-container">
+            <li
+              *ngFor="let item of models; let i = index"
+              class="w-6 h-6 rounded-full mx-2 cursor-pointer"
+              [style.backgroundColor]="item.color[0]"
+              (click)="selectModel(item)"
+            ></li>
+          </ul>
+
+          <button class="size-btn-container">
+            <span
+              *ngFor="let s of sizes"
+              class="size-btn"
+              [style.backgroundColor]="size === s.value ? 'white' : 'transparent'"
+              [style.color]="size === s.value ? 'black' : 'white'"
+              (click)="selectSize(s.value)"
+            >
+              {{ s.label }}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
