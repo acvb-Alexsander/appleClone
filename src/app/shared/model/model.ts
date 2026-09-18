@@ -42,9 +42,9 @@ export class ModelComponent implements AfterViewInit, OnDestroy {
   @ViewChild('smallView') smallView!: ModelViewComponent;
   @ViewChild('largeView') largeView!: ModelViewComponent;
 
-  private tl = gsap.timeline();
+  private readonly tl = gsap.timeline();
 
-  constructor(private viewerService: ModelViewerService) {}
+  constructor(private readonly viewerService: ModelViewerService) {}
 
   ngAfterViewInit(): void {
     // Um único WebGLRenderer/canvas compartilhado pelas duas ModelView,

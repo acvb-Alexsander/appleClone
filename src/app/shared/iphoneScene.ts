@@ -24,13 +24,18 @@ export interface IphoneHandle {
 const MODEL_URL = '/models/scene.glb';
 
 // Materiais que NÃO mudam de cor (tela, câmera, vidro etc.)
-const FIXED_MATERIALS = [
+const FIXED_MATERIALS = new Set([
   'zFdeDaGNRwzccye',
   'ujsvqBWRMnqdwPx',
   'hUlRcbieVuIiOXG',
   'jlzuBkUzuJqgvAY',
   'xNrofRCqOXXHVZt',
-];
+]);
+
+function setSize(_size: 'small' | 'large') {
+  // Intencionalmente vazio: a troca de tamanho é feita pela escala
+  // (15 vs 17) e pela animação GSAP, não pela geometria.
+}
 
 export function createIphoneModel(scale: [number, number, number]): IphoneHandle {
   const group = new THREE.Group();
@@ -50,7 +55,7 @@ export function createIphoneModel(scale: [number, number, number]): IphoneHandle
           const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
           mats.forEach((m) => {
             console.log('material:', m.name); // remova depois de conferir
-            if (!FIXED_MATERIALS.includes(m.name)) {
+            if (!FIXED_MATERIALS.has(m.name)) {
               colorable.add(m as THREE.MeshStandardMaterial);
             }
           });
@@ -68,11 +73,6 @@ export function createIphoneModel(scale: [number, number, number]): IphoneHandle
       m.color.set(color);
       m.needsUpdate = true;
     });
-  }
-
-  function setSize(_size: 'small' | 'large') {
-    // Intencionalmente vazio: a troca de tamanho é feita pela escala
-    // (15 vs 17) e pela animação GSAP, não pela geometria.
   }
 
   return { group, loaded, setColor, setSize };

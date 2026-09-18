@@ -36,6 +36,7 @@
         <div class="flex-center">
           <ul class="color-container">
             <li
+              onkeypress=""
               *ngFor="let item of models; let i = index"
               class="w-6 h-6 rounded-full mx-2 cursor-pointer"
               [style.backgroundColor]="item.color[0]"
@@ -45,8 +46,9 @@
 
           <button class="size-btn-container">
             <span
+              onkeypress=""
               *ngFor="let s of sizes"
-              class="size-btn"
+              class="size-btn cursor-pointer hover:scale-3d"
               [style.backgroundColor]="size === s.value ? 'white' : 'transparent'"
               [style.color]="size === s.value ? 'black' : 'white'"
               (click)="selectSize(s.value)"
